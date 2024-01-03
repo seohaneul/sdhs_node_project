@@ -1,50 +1,33 @@
 const express = require("express");
-const { v4: uuidv4 } = require('uuid');
-const crypto = require('crypto');
 const _ = require('lodash');
 const app = express();
 
-app.use(express.json())
+const signupRoute = require('./server/routes/signup')
+const signinRoute = require('./server/routes/signin')
+const encoryptPassword = require('./lib/encryptPassoword')
+const initExpressApp = require('./server/initExpressApp')
 
-function encoryptPassword(password) {
-    return crypto
-        .createHash('sha256')
-        .update(password + "asdfasdf@#$%^&")
-        .digest('base64')
-}
 
-let users = [{
-    idx: uuidv4(),
-    id: 'digitect1',
-    password: encoryptPassword('thisispassword'),
-    name: '홍길동',
-    gender: 'male',
-    age: 21,
-    phoneNumber: '010-0000-0000'
-}]
+initExpressApp(app)
 
-app.post('/signup', (req, res) => {
-    // const {
-    //     id, password, name, gender, age, phoneNumber
-    // } = req.body;
+const routes = [
+    signinRoute,
+    signupRoute
+]
 
-    const user = _.pick(
-        req.body,
-        [
-        'id',
-        'password', 
-        'name', 
-        'gender', 
-        'age', 
-        'phoneNumber'
-        ]
-    )
-    users.push(user)
-    return res.send({ success: true })
+routes.forEach(route => {
+    app[route.method](route.path, route.handler)
 })
 
-app.get('/users', (req, res) =>{
-    return res.json(users)
+
+
+app.get('/users/me', (req, res) =>{
+    const {idx} = req.session
+
+    const me = users.find(user => {
+        return user.idx === idx
+    })
+    return res.json(me)
 })
 
 app.delete('/users/:userId', (req, res) =>{
@@ -75,7 +58,7 @@ app.patch('/users/:userId', (req, res) => {
             if(newUser.password !== undefined){
                 newUser.password = encoryptPassword(newUser.password)
             }
-            Object.assign(users[userIndex], newUser)
+            Object.assign(users[userId], newUser)
         }
     }
 
@@ -93,3 +76,6 @@ const port = 3000
 app.listen(port, () => {
     console.log(`App is running on port: ${port}`)
 })
+
+
+//mh8DoMgvG1MNZnE4
