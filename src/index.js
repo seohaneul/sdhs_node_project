@@ -4,10 +4,29 @@ const app = express();
 
 const signupRoute = require('./server/routes/signup')
 const signinRoute = require('./server/routes/signin')
+
+const User = require('./db/users.schema')
+const dbConnect = require('./db/connect')
 const encoryptPassword = require('./lib/encryptPassoword')
 const initExpressApp = require('./server/initExpressApp')
 
 
+async function a () {
+    console.log('DB 접속 시도')
+    await dbConnect()
+    console.log('DB 접속 완료')
+    
+    await User.create({
+        id: 'asdf',
+        password: 'qwer',
+        name: '1234',
+        age: 453
+    })
+
+    console.log(await User.find())
+}
+
+a()
 initExpressApp(app)
 
 const routes = [
