@@ -1,14 +1,10 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
-const id = 'seohaneul';
-const password = 'mh8DoMgvG1MNZnE4';
-const connectionString = `mongodb+srv://${id}:${password}@cluster0.h2ruece.mongodb.net/?retryWrites=true&w=majority`;
+const id = 'wkdwnsghd617'
+const password = '1heKZzmHNNyKLFbh'
+const connectionString = `mongodb+srv://${id}:${password}@cluster0.adgnrvm.mongodb.net/?retryWrites=true&w=majority`
 
-module.exports = async function() {
-    // mongoose
-    //     .connect(connectionString)
-    //     .then(() => console.log('Connectied!'))
-
+module.exports = async function () {
     await mongoose.connect(connectionString)
     console.log('Connected!')
 }
