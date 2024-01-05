@@ -1,25 +1,30 @@
-const _ = require('lodash')
-const express = require('express')
-const moduleAlias = require('module-alias')
+import _ from 'lodash'
+import express from 'express'
+import { connectDB } from './db/connect';
+import { initExpressApp } from './server/initExpressApp'
 
-moduleAlias.addAliases({
-    '@root'  : __dirname,
-    '@db': __dirname + '/db',
-    '@routes': __dirname + '/server/routes',
-    '@lib': __dirname + '/lib',
-    '@server': __dirname + '/server'
-})
+import { createPostRoute } from './server/routes/posts/createPost';
+import { deletePostRoute } from './server/routes/posts/deletePost';
+import { Route } from '../types/Route';
 
-const routes = require('@routes')
+const routes: Route[] =[
+    createPostRoute,
+    deletePostRoute
+    
+]
 
-const dbConnect = require('@db/connect')
-const initExpressApp = require('@server/initExpressApp')
+declare module 'express-session' {
+    interface SessionData {
+        _id?: string;
+    }
+}
+
 
 async function bootstrap () {
     const app = express()
 
     console.log('DB 접속 시도')
-    await dbConnect()
+    await connectDB()
     console.log('DB 접속 완료')
 
     initExpressApp(app)

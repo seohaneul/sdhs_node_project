@@ -1,0 +1,1 @@
+export default function encryptPassword (password: string): string
